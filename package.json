@@ -1,0 +1,14 @@
+{
+  "name": "gem",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "The generalized computing sources server",
+  "main": "server.js",
+  "scripts": {
+    "test": "node --version",
+    "start": "node server.js"
+  },
+  "contibutors": ["Neverneit Sober"],
+  "author": "Elnior Loreh",
+  "license": "MIT"
+}

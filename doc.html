@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Gem</title>
+		<link rel="icon" href="/icon.png" >
+		<style>
+			html::-webkit-scrollbar {
+				appearance: none;
+				width: 20px;
+				background-color: transparent;
+			}
+			html::-webkit-scrollbar-corner {
+				appearance: none;
+				display: none;
+			}
+			html::-webkit-scrollbar-track {
+				appearance: none;
+				width: 20px;
+				background-color: transparent;
+			}
+			html::-webkit-scrollbar-track-button {
+				appearance: none;
+				display: none;
+			}
+			html::-webkit-scrollbar-thumb {
+				appearance: none;
+				width: 20px;
+				background-color: #640081;
+				border-radius: 1em;
+			}
+
+			section#fileList::-webkit-scrollbar {
+				appearance: none;
+				width: 20px;
+				background-color: transparent;
+			}
+			section#fileList::-webkit-scrollbar-corner {
+				appearance: none;
+				display: none;
+			}
+			section#fileList::-webkit-scrollbar-track {
+				appearance: none;
+				width: 20px;
+				background-color: transparent;
+			}
+			section#fileList::-webkit-scrollbar-track-button {
+				appearance: none;
+				display: none;
+			}
+			section#fileList::-webkit-scrollbar-thumb {
+				appearance: none;
+				width: 20px;
+				background-color: yellow;
+				border-radius: 1em;
+			}
+
+			body, html {
+				padding: 0px;
+				margin: 0px;
+				box-sizing: border-box;
+			}
+			header {
+				background-color: black;
+				padding: 16px;
+				margin: 0px;
+			}
+			header h1 {
+				background-color: black;
+				margin: 0px;
+				text-align: center;
+				font: bold 3em "Courier new", monospace;
+				color: white;
+				text-decoration: underline solid red; 
+			}
+			ul {
+				display: block;
+				width: 80vw;
+			}
+			ul li {
+				font: bolder 2.5em "courier new", monospace;
+				white-space: wrap;
+				padding: 10px;
+			}
+			div.controls button,
+			button.front {
+				background-color: black;
+				margin: 0px 0px 0px 20px;
+				font: inherit;
+				color: white;
+				cursor: pointer;
+				box-shadow: 3px 3px 4px red;
+				transition: 100ms box-shadow ease-in;
+			}
+			button.front:hover, div.controls button:hover {
+				box-shadow: 2px 2px 5px red;
+			}
+			button.front:active, div.controls button:active {
+				box-shadow: 0.2px 0.2px 5px red;
+			}
+			ul li.failed {
+				color: gray;
+				list-style-type: none;
+			}
+			ul li.info {
+				color: darkblue;
+				list-style-type: none;
+			}
+			ul li.errored {
+				color: red;
+				list-style-type: none;
+			}
+			button.front {
+				font: bold 60px normal;
+				display: block;
+				width: 90px;
+				height: 90px;
+				position: fixed;
+			}
+			button.front#createDirectory {
+				bottom: 10px;
+				right: 10px;
+			}
+			button.front#loadFile {
+				bottom: 110px;
+				right: 10px;
+			}
+			form {
+				background-color: purple;
+				min-width: 300px;
+				max-width: 600px;
+				width: 80vw;
+				position: fixed;
+				top: 30px;
+				left: 30px;
+				z-index: 3;
+				padding: 0px;
+				transform: translateX(-80vw);
+				transition: 400ms transform ease;
+			}
+			form.creating {
+				transform: translateX(0);
+			}
+			form label {
+				display: block;
+				text-decoration: underline solid yellow;
+				font: bolder 3em "Courier new";
+				color: white;
+				padding: 2px;
+				text-align: center;
+			}
+			form div.message {
+				white-space: wrap;
+				word-wrap: break-word;
+				width: 100%;
+				color: yellow;
+				font: bolder 2em monospace;
+				padding: 2px;
+			}
+			form input {
+				display: block;
+				margin: auto;
+				font: bolder 2.5em "Courier new";
+				background-color: #00185a;
+				color: white;
+				width: 90%;
+			}
+			form input::placeholder {
+				color: cyan;
+			}
+			form div.controls {
+				padding: 20px 0px 10px 0px;
+				display: flex;
+				justify-content: space-evenly;
+			}
+			form div.controls button {
+				font: bolder 2.3em "Courier new";
+			}
+			section {
+				background-color: #2d2966;
+				width: 90vw;
+				min-width: 300px;
+				max-width: 680px;
+				max-height: 90vh;
+				overflow-x: hidden;
+				overflow-y: auto;
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: 5;
+				filter: opacity(0);
+				transition: 300ms filter linear;
+			}
+			section.visible {
+				filter: opacity(1);
+			}
+			section div.controls {
+				display: flex;
+				flex-flow: row nowrap;
+				font: bold 2.6em "Courier new", monospace;
+				justify-content: space-evenly;
+				padding: 5px 0px 0px 0px;
+			}
+			section h2 {
+				font: bold 2.6em "Courier new", monospace;
+				color: yellow;
+				padding: 4px;
+			}
+			section p {
+				font: bold 2em "Courier new", monospace;
+				text-decoration: underline solid red;
+				white-space: wrap;
+				word-wrap: break-word;
+				width: 100%;
+				padding: 2px;
+				color: white;
+			}
+			section p button {
+				font: inherit;
+				margin: 0px 0px 0px 10px;
+				cursor: pointer;
+				background-color: red;
+				color: white;
+				border-radius: 1em;
+			}
+			div#box {
+				display: none;
+				background-color: #92a5afa6;
+				flex-flow: row nowrap;
+				align-items: center;
+				justify-content: center;
+				width: auto;
+				margin: 0px;
+				padding: 0px;
+				position: fixed;
+				top: 0px;
+				bottom: 0px;
+				left: 0px;
+				right: 0px;
+				z-index: 7;
+			}
+			div#box.show {
+				display: flex;
+			}
+			div#box div.mom {
+				display: grid;
+				background-color: #110828c2;
+				grid-template-columns: repeat(3, 100px);
+				grid-template-rows: repeat(3, 100px);
+				width: 300px;
+				height: 300px;
+				border-radius: 150px;
+				column-gap: 0px;
+				row-gap: 0px;
+				justify-content: center;
+				align-content: center;
+				justify-items: center;
+				align-items: center;
+			}
+			div#box div.mom p {
+				font: bold 46px "Courier New", monospace;
+				grid-area: 2 / 1 / 2 / 4;
+				background-color: transparent;
+				color: white;
+				padding: 0px;
+			}
+			div#box div.mom div.loader {
+				transform: rotateZ(0deg);
+				border-top: 8px solid red;
+				border-left: 8px solid transparent;
+				border-right: 8px solid transparent;
+				border-bottom: 8px solid yellow;
+				align-self: stretch;
+				justify-self: stretch;
+				background-color: transparent;	
+				grid-area: 1 / 1 / 4 / 4;	
+				border-radius: 150px;
+				animation-name: dinamicBorder;
+				animation-duration: 2s;
+				animation-timing-function: linear;
+				animation-delay: 0s;
+				animation-iteration-count: infinite;
+			}
+			@keyframes dinamicBorder {
+				0% {
+					transform: rotateZ(20deg)
+				}
+				10% {
+					transform: rotateZ(-30deg);
+				}
+				20% {
+					transform: rotateZ(30deg);
+				}
+				30% {
+					transform: rotateZ(-60deg);
+				}
+				40% {
+					transform: rotateZ(60deg);
+				}
+				50% {
+					transform: rotateZ(-70deg);
+				}
+				60% {
+					transform: rotateZ(120deg);
+				}
+				70% {
+					transform: rotateZ(220deg);
+				}
+				80% {
+					transform: rotateZ(320deg);
+				}
+				90% {
+					transform: rotateZ(340deg);
+				}
+				100% {
+					transform: rotateZ(360deg);
+				}
+			}
+			div.bar {
+				position: fixed;
+				background-color: yellow;
+				border-top: 2px solid #110828c2;
+				border-bottom: 2px solid #110828c2;
+				border-radius: 1em;
+				z-index: 9;
+				top: 0px;
+				left: 0px;
+				width: 0px;
+				height: 6px;
+			}
+		</style>
+		<script type="application/javascript">
+			const message = "Do you want reload or close web page?";
+			const files = new Map();
+			const purified = window.location.href.split("").filter((el, index, thisArg)=> !(el == "/" && index == (thisArg.length-1))).join("");
+			let WORKING = false;
+			const textDecoder = new TextDecoder();
+
+			function delay (time) {
+				return new Promise ((resolve, reject)=> 
+					setTimeout(resolve, time)
+				);
+			}
+
+			async function sendFiles () {
+				WORKING = true;
+				const $box = document.getElementById("box");
+				const progressBar = document.getElementById("progress-bar");
+				$box.className = "show";
+				for (let [key, value] of files) {
+					try {
+						const partial = JSON.stringify({bytes: value.size});
+						// connect to server for initial sending
+						let informationSetting = await fetch (`${purified}?fileName=${key}`, {
+								method: "post",
+								headers: {
+									"content-type": "application/json",
+									connection: "keep-alive",
+									"content-length": partial.length,
+									accept: "text/plain",
+								},
+								body: partial
+						});
+						if (informationSetting.status == 224) {
+							// success connecting 1/2
+							let reader = informationSetting.body.getReader();
+							let readed = await reader.read();
+
+							let [obj1, obj2] = textDecoder.decode(readed.value, {stream: true}).split("&").filter(el=> el !== "").map(el=> {
+								let [keyData, valueData] = el.split("=");
+								return {
+									[keyData]: valueData.replace(/\"/g, "")
+								}
+							});
+							let {accessKey, error} = Object.assign((typeof obj1 == "object")? obj1 : {}, (typeof obj2 == "object")? obj2 : {});
+							let readedData = 0;
+
+							if (error) {
+								progressBar.style.width = `75%`;
+								progressBar.style.backgroundColor = "red";
+								console.warn(error);
+								await delay(1000);
+							}
+							else {
+								// success connecting 2/2
+								const contentStream = value.stream();
+								const contentReader = contentStream.getReader();
+								let content = await contentReader.read();
+								while (!content.done) {
+									// Send datas
+									let initialSend = await fetch (`${purified}?fileName=${key}&accessKey=${accessKey}`, {
+										method: "post",
+										headers: {
+											"content-type": value.type,
+											"content-length": content.value.length,
+											accept: "text/plain"
+										},
+										body: content.value
+									});
+									if (initialSend.status !== 225) {
+										progressBar.style.width = `75%`;
+										progressBar.style.backgroundColor = "red";
+										console.warn(error);
+										await delay(1000);
+										break;
+									}
+									else await initialSend.text();
+
+									readedData += content.value.length;
+									progressBar.style.width = `${100*(readedData/value.size)}%`;
+									// get more
+									content = await contentReader.read();
+								}
+								if (content.done) {
+									const sectL = document.body.querySelector("section#fileList");
+									let element = sectL.querySelector(`p[data-name="${key}"]`);
+										
+									files.delete(key);
+									if (files.size == 0) 
+										closeLoads();
+									else {
+										sectL.querySelector("h2").textContent = `File/s : ${files.size}`;
+										element.parentElement.removeChild(element);
+									}
+								}
+							}
+						}
+						else 
+							throw new Error(await informationSetting.text());
+					} catch(error) {
+						// Level 1
+						alert("An error ocurred: " + error.message);
+					}
+					finally {
+						await delay(50);
+						progressBar.removeAttribute("style");
+					}
+				}
+				WORKING = false;
+				$box.className = "";
+			}
+			
+			window.onbeforeunload = function (evArg) {
+				if (files.size !== 0) return (evArg.returnValue = message);
+			}
+
+			const $inputTypeFile = document.createElement("input");
+			$inputTypeFile.setAttribute("type", "file");
+			$inputTypeFile.setAttribute("name", "file");
+
+			$inputTypeFile.onchange = ({target})=> {
+				if (target.files.length !== 0) {
+					let file = target.files["0"];
+					files.set(file.name, file);
+					if (files.size == 1) {
+						const $fileListTemplate = document.getElementById("@fileList");
+						let $p = document.createElement("p"),
+						$button = document.createElement("button");
+						$p.dataset.name = file.name;
+						$p.textContent = file.name;
+						$button.textContent = "remove";
+						$p.appendChild($button);
+						let imported = document.importNode($fileListTemplate.content, true);
+						imported.querySelector("h2").textContent = "File/s : 1";
+						imported.querySelector("section#fileList").appendChild($p);
+
+						document.body.appendChild(imported);
+
+						setTimeout(()=> {
+							const sectL = document.body.querySelector("section#fileList");
+							sectL.classList.add("visible");
+						}, 10);
+					}
+					else {
+						const sectL = document.body.querySelector("section#fileList");
+						let $p = document.createElement("p"),
+						$button = document.createElement("button");
+						$p.dataset.name = file.name;
+						$p.textContent = file.name;
+						$button.textContent = "remove";
+						$p.appendChild($button);
+						sectL.querySelector("h2").textContent = `File/s : ${files.size}`;
+						sectL.appendChild($p);
+					}
+				}
+			}
+
+			function loadFile () {
+				$inputTypeFile.click();
+			}
+			function closeLoads () {
+				const sectL = document.body.querySelector("section#fileList");
+				sectL.ontransitionend = ()=> document.body.removeChild(sectL);
+				sectL.classList.remove("visible");
+				files.clear();
+			}
+			function closeInterface () {
+				const form = document.nameCreator;
+				form.ontransitionend = ()=> document.body.removeChild(form);
+				form.classList.remove("creating");
+				WORKING = false;
+			}
+			async function showInterface () {
+				WORKING = true;
+				const $creatingT = document.getElementById("@creating");
+				$creatingT.content.querySelector("form").setAttribute("name", "nameCreator");
+
+				let imported = document.importNode($creatingT.content, true);
+				document.body.appendChild(imported, true);
+				await delay(50);
+				document.nameCreator.className = "creating";
+
+			}
+			function subHandler (evArg) {
+				if (evArg.target.matches("div.controls button#cancel"))
+					closeInterface();
+			}
+			function handler (evArg) {
+				if (WORKING) return subHandler(evArg);
+				else if (evArg.target.matches("button#createDirectory")) 
+					showInterface();
+				else if (evArg.target.matches("button#loadFile"))
+					loadFile();
+				else if (evArg.target.matches("button#cl"))
+					closeLoads();
+				else if (evArg.target.matches("button#send-now"))
+					sendFiles();
+				else if (evArg.target.closest("section#fileList p button")) {
+					if (files.size == 1)
+						closeLoads();
+					else {
+						let { parentElement } = evArg.target;
+						const sectL = document.body.querySelector("section#fileList");
+						files.delete(parentElement.dataset.name);
+						parentElement.parentElement.removeChild(parentElement);
+						sectL.querySelector("h2").textContent = `File/s : ${files.size}`;
+					}
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Gem Online</h1>
+		</header>
+		<ul id="main"></ul>
+		
+		<div id="progress-bar" class="bar"></div>
+
+		<div id="box" class="">
+			<div class="mom">
+				<p>Processing</p>
+				<div class="loader"></div>
+			</div>
+		</div>
+
+		<button id="loadFile" class="front">+</button>
+		<button id="createDirectory" class="front">D+</button>
+
+		<script type="application/javascript">
+			const $main = document.getElementById("main");
+			
+			let directionLevel = window.location.pathname.split("/");
+			directionLevel.pop();
+			let $forBack = document.createElement("li");
+			let $a = document.createElement("a");
+			$a.href = directionLevel.join("/");
+			$a.textContent = "../";
+			$forBack.appendChild($a);
+			$main.appendChild($forBack);
+
+			async function createDirectory () {
+				let { value } = document.nameCreator.dir;
+				let $messager = document.nameCreator.dir.previousElementSibling;
+				try {
+					let body = value;
+					let creationResponse = await fetch(purified, {
+						method: 'post',
+						headers: {
+							"content-type": "text/txt",
+							accept: "text/txt",
+							date: Date.now(),
+							"accept-language": "en"
+						},
+						body
+					});
+					if (creationResponse.status == 234) {
+						// all nice..
+						$messager.textContent = await creationResponse.text();
+						let $newDir = document.createElement("li");
+						let $a = document.createElement("a");
+						$a.href = `${purified}/${value}`;
+						$a.textContent = value;
+						$newDir.appendChild($a);
+						$main.appendChild($newDir);
+						await delay(500);
+						let $thereAreNo = $main.querySelector("li.info");
+						
+						if ($thereAreNo)
+							$thereAreNo.parentElement.removeChild($thereAreNo);
+
+						closeInterface();
+					}
+					else 
+						throw new Error(await creationResponse.text());
+				}
+				catch (error) {
+					$messager.textContent = `An error ocurred: ${error.message}`;
+					await delay(3000);
+					$messager.textContent = "";
+				}
+			}
+			
+			fetch(window.location.href, {
+				method: 'checkout',
+				mode: 'cors',
+				headers: {
+					"accept": "application/json",
+					date: Date.now()
+				}
+			})
+			.then(resp => {
+				if (resp.status == 206) 
+					return resp.json();
+				else {
+					let $failed = document.createElement("li");
+					$failed.className ="failed";
+					$failed.textContent = "Failed to load data";
+					$main.appendChild($failed);
+				}
+			})
+			.then(data => {
+				if (!(data instanceof Array)) return;
+				const $fragment = document.createDocumentFragment();
+				for (let name of data) {
+					let $li = document.createElement("li");
+					let $a = document.createElement("a");
+					let dir = window.location.href;
+					$a.href = dir + ((dir[dir.length-1] == "/")? "" : "/") + name;
+					$a.textContent = name;
+					$li.appendChild($a);
+					$fragment.appendChild($li);
+				}
+				if (data.length == 0) {
+					let $li = document.createElement("li");
+					$li.className = "info";
+					$li.textContent = "There are no elements";
+					$fragment.appendChild($li);
+				}
+				$main.appendChild($fragment);
+			})
+			.catch(error => {
+				let $failed = document.createElement("li");
+				$failed.className = "errored";
+				$failed.textContent = error.message;
+				$main.appendChild($failed);
+			});
+
+			document.body.addEventListener("click", handler);
+			document.body.addEventListener("submit", function (evAnonymous) {
+				if (evAnonymous.target.name == "nameCreator") {
+					evAnonymous.preventDefault();
+					createDirectory();
+				}
+			});
+		</script>
+
+		<template id="@creating">
+			<form class="" method="post">
+				<label for="dir">Add directory</label>
+				<div class="message"></div>
+				<input type="text" autocomplete="off" name="dir" id="dir" placeholder="Directory Name">
+				<div class="controls">
+					<button id="cancel" type="button">Cancel</button>
+					<button type="submit">Send</button>
+				</div>
+			</form>	
+		</template>
+
+		<template id="@fileList">
+			<section id="fileList" class="">
+				<div class="controls">
+					<button id="send-now">Send</button>
+					<button id="cl">Cancel</button>
+				</div>
+
+				<h2>File/s : 2</h2>
+			</section>
+		</template>
+	</body>
+</html>

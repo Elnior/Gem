@@ -1,0 +1,54 @@
+[
+	{
+		"contyp": "text/txt",
+		"format": ".txt"
+	},
+	{
+	"contyp": "audio/aac", 
+	"format": ".aac"
+	},
+	{
+		"contyp": "image/png",
+		"format": ".png"
+	},
+	{
+		"contyp": "text/html",
+		"format": ".htm"
+	},
+	{
+		"contyp": "audio/mpeg",
+		"format": ".mp3"
+	},
+	{
+		"contyp": "video/mp4",
+		"format": ".mp4"
+	}, 
+	{
+		"contyp": "application/x-abiword",
+		"format":".abw" 
+	},
+	{
+		"contyp":"text/plain",
+		"format":""
+	},
+	{
+		"contyp":"video/x-msvideo",
+		"format":".avi"
+	},
+	{
+		"contyp": "application/vnd.amazon.ebook",
+		"format":".azw"
+	},
+	{
+		"contyp":"image/jpeg", 
+		"format":".jpeg"
+	},
+	{
+		"contyp":"image/jpeg", 
+		"format":".jpg"
+	},
+	{
+		"contyp":"image/jpeg", 
+		"format":".jpe"
+	},
+	{"contyp":"application/octet-stream","format":".bin"},{"contyp":"application/x-bzip","format":".bz"},{"contyp":"application/x-bzip2","format":".bz2"},{"contyp":"application/x-csh","format":".csh"},{"contyp":"text/css","format":".css"},{"contyp":"text/csv","format":".csv"},{"contyp":"application/msword","format":".doc"},{"contyp":"application/epub+zip","format":".epub"},{"contyp":"image/gif","format":".gif"},{"contyp":"text/html","format":".html"},{"contyp":"image/x-icon","format":".ico"},{"contyp":"text/calendar","format":".ics"},{"contyp":"application/java-archive","format":".jar"},{"contyp":"application/javascript","format":".js"},{"contyp":"application/json","format":".json"},{"contyp":"audio/midi","format":".mid .midi"},{"contyp":"video/mpeg","format":".mpeg"},{"contyp":"application/vnd.apple.installer+xml","format":".mpkg"},{"contyp":"application/vnd.oasis.opendocument.presentation","format":".odp"},{"contyp":"application/vnd.oasis.opendocument.spreadsheet","format":".ods"},{"contyp":"application/vnd.oasis.opendocument.text","format":".odt"},{"contyp":"audio/ogg","format":".oga"},{"contyp":"video/ogg","format":".ogv"},{"contyp":"application/ogg","format":".ogx"},{"contyp":"application/pdf","format":".pdf"},{"contyp":"application/vnd.ms-powerpoint","format":".ppt"},{"contyp":"application/x-rar-compressed","format":".rar"},{"contyp":"application/rtf","format":".rtf"},{"contyp":"application/x-sh","format":".sh"},{"contyp":"image/svg+xml","format":".svg"},{"contyp":"application/x-shockwave-flash","format":".swf"},{"contyp":"application/x-tar","format":".tar"},{"contyp":"image/tiff","format":".tif .tiff"},{"contyp":"font/ttf","format":".ttf"},{"contyp":"application/vnd.visio","format":".vsd"},{"contyp":"audio/x-wav","format":".wav"},{"contyp":"audio/webm","format":".weba"},{"contyp":"video/webm","format":".webm"},{"contyp":"image/webp","format":".webp"},{"contyp":"font/woff","format":".woff"},{"contyp":"font/woff2","format":".woff2"},{"contyp":"application/xhtml+xml","format":".xhtml"},{"contyp":"application/vnd.ms-excel","format":".xls"},{"contyp":"application/xml","format":".xml"},{"contyp":"application/vnd.mozilla.xul+xml","format":".xul"},{"contyp":"application/zip","format":".zip"},{"contyp":"video/3gpp audio/3gpp if it doesn't contain video","format":".3gp"},{"contyp":"video/3gpp2 audio/3gpp2 if it doesn't contain video","format":".3g2"},{"contyp":"application/x-7z-compressed","format":".7z"}]
