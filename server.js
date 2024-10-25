@@ -196,6 +196,7 @@ async function dispatch (obR, socket, moreData) {
 											let streamOfFile = fs.createReadStream(`${direction}${simplify}`);
 												socket.write(
 													"HTTP/1.1 200 Ok\r\n" +
+													`content-length: ${stat.size}\r\n` +
 													`content-type: octet/stream\r\n` +
 													`date: ${Date.now()}\r\n` +
 													"server: NElniorS\r\n\r\n"
