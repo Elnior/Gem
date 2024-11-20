@@ -5,12 +5,12 @@ import Anully from './reqParser.js'; // Anully Standard v1.0.3
 
 const pathAccess = Symbol("pathAccess");
 // the default path
-let direction = "./sources/here";
+let direction = "/home/mint/Desktop";
 
 process.title = "Gem Online < | > v1.0.0";
 
 function delay (time) {
-	return new Promise ((resolve, reject)=> 
+	return new Promise ((resolve, reject)=>
 		setTimeout(resolve, time)
 	);
 }
@@ -49,9 +49,9 @@ class DataHandler {
 		let complete = "";
 		for (let char of stringData) {
 			if (ready) complete += char;
-			else if (char == "?") 
+			else if (char == "?")
 				ready = true;
-			else 
+			else
 				obj[pathAccess] += char;
 		}
 		let all = complete.split("&");
@@ -131,7 +131,7 @@ async function dispatch (obR, socket, moreData) {
 			else
 				fs.exists("./notValid.html", isReady => {
 					let simplify = obR.path.split("/").filter(el=> el !== "home").join("/");
-				 
+
 					fs.stat(`${direction}${simplify}`, function (posibleError, stat) {
 						if (posibleError) {
 							// it's here
@@ -249,7 +249,7 @@ async function dispatch (obR, socket, moreData) {
 						socket.end();
 					}
 				});
-			else 
+			else
 				fs.stat(`${direction}${simplify}`, function (posibleError, stat) {
 					if (posibleError) {
 						let message = Buffer.from(`this direction is not valid!`, "utf-8");
@@ -299,7 +299,7 @@ async function dispatch (obR, socket, moreData) {
 									}
 								}
 							});
-						else 
+						else
 							fs.readdir(direction + simplify, function(error, list){
 								if (error) {
 									let message = Buffer.from(`The "${simplify}" direction is not found.`, "utf-8");
@@ -333,7 +333,7 @@ async function dispatch (obR, socket, moreData) {
 		case 'post':
 			const parsed = DataHandler.parseQueryString(obR.path);
 			let simplifyOther = parsed[pathAccess].split("/").filter(el=> el !== "home").join("/");
-			
+
 			fs.exists(`${direction}${simplifyOther}`, async function (isAdyacent) {
 				if ((isAdyacent && "fileName" in parsed) && "content-length" in obR.headers) {
 					// write more data with access key
@@ -346,9 +346,9 @@ async function dispatch (obR, socket, moreData) {
 							writableStream.write(content);
 							let actualInserted = content.byteLength;
 
-							if (actualInserted == Number(obR.headers["content-length"])) 
+							if (actualInserted == Number(obR.headers["content-length"]))
 								writableStream.writedDataActual += actualInserted;
-							else 
+							else
 								await new Promise((resolve, reject)=> {
 									function internalRecurtion () {
 										let iterator = moreData.dataCollection[Symbol.iterator]();
@@ -365,9 +365,9 @@ async function dispatch (obR, socket, moreData) {
 											clearInterval(interval);
 											resolve(writableStream.writedDataActual += actualInserted);
 										}
-									}, Math.ceil(Math.random()*1000));
+									}, Math.ceil(Math.random()/8));
 								});
-							
+
 							if (writableStream.writedDataActual == target) {
 								status = "finished";
 								writableStream.end();
@@ -434,7 +434,7 @@ async function dispatch (obR, socket, moreData) {
 							).on("close", ()=> {
 								DataHandler.streamMatriz.delete(accessKey);
 								moreData.dataCollection.clear();
-								if (error || !writed) 
+								if (error || !writed)
 									return fs.unlink(writable.path, function () {
 										let internalInfo = `Failed to load file\r\n~ I don't know`;
 										let notifying = `error="${internalInfo}"&`;
@@ -570,9 +570,23 @@ function handlerSocket (socket) {
 	.on("data", data => {
 		if (dataHandler.isFirstData) {
 			let obRequest = Anully(data);
-			dispatch(obRequest, socket, dataHandler);
+			if (obRequest)
+			    dispatch(obRequest, socket, dataHandler).catch(error=> {
+                    let message = Buffer.from(`Error (503): ${error.message}`, "utf-8");
+			        socket.write(
+				        "HTTP/1.1 503 internal error\r\n" +
+				        "content-type: text/txt\r\n" +
+				        `content-length: ${message.byteLength}\r\n` +
+				        "date: this moment\r\n" +
+				        "server: NElniorS\r\n\r\n"
+			        );
+			        socket.write(message);
+			        socket.end();
+			    });
+			else
+			    socket.end();
 		}
-		else 
+		else
 			dataHandler.dataCollection.add(data);
 		dataHandler.isFirstData = false;
 	})
